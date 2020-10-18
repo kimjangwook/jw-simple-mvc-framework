@@ -17,9 +17,13 @@ require_once(VENDOR_DIR . 'autoload.php');
 
 // 環境変数を使うため、dotenvライブラリーロード
 use Symfony\Component\Dotenv\Dotenv;
-
 $dotenv = new Dotenv();
 $dotenv->load('../.env');
+
+// XSS攻撃防止のための関数
+function h($str) {
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
 
 // ビューに渡すデータの配列
 $data = [];
@@ -67,8 +71,19 @@ if (file_exists($controllerPath)) {
         }
     
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // GETの際に　csrf_token を発行し、セッションに保存すること
+            $toke_byte = openssl_random_pseudo_bytes(16);
+            $csrf_token = bin2hex($toke_byte);
+            $_SESSION['csrf_token'] = $csrf_token;
             $obj->get();
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // CSRFエラーが発生した場合
+            if (!(isset($_POST["csrf_token"]) && $_POST["csrf_token"] === $_SESSION['csrf_token'])) {
+                $_SESSION['error'] = 'HTTP/1.0 403 Invalid CSRF Token';
+                include($errorPath);
+                die();
+            }
+
             $obj->post();
         }
         $data = $obj->data;
@@ -84,4 +99,4 @@ if (file_exists($viewPath)) {
 // コントローラもビューもない場合
 $_SESSION['error'] = 'HTTP/1.0 404 Not Found';
 include($errorPath);
-exit();
+die();

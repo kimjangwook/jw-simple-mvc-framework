@@ -16,8 +16,8 @@
         <tbody>
             <?php foreach ($data['users'] as $user): ?>
             <tr>
-                <td><?php echo $user['id']; ?></td>
-                <td><?php echo $user['name']; ?></td>
+                <td><?php echo h($user['id']); ?></td>
+                <td><?php echo h($user['name']); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
