@@ -1,0 +1,9 @@
+# vendor
+vendor
+
+# IDE settings
+.vscode
+.idea
+
+# env file
+.env

@@ -1,0 +1,27 @@
+{
+    "name": "kjw/jw-simple-mvc-framework",
+    "description": "It's very simple mvc framework written by Kim Jangwook. This framework helps to understand mvc model to my students. If you want, you can use this framework.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kim",
+            "email": "kim.jangwook.1029@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/dotenv": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\Controllers\\": "controllers/",
+            "App\\Model\\": "model/"
+        }
+    },
+    "scripts": {
+        "start": "php -S 0.0.0.0:8080 -t public public/index.php",
+        "test": "phpunit",
+        "post-install-cmd": [
+            "sh post-install.sh"
+        ]
+	}
+}
